@@ -21,23 +21,34 @@ en administración Linux, redes, seguridad, monitorización, automatización e i
 | Hosting cómputo | VMs Linux en local | Hardware sobrado (64 GB / Ryzen 9). Mejor máquina que cualquier capa gratuita cloud. |
 | Nube | AWS (no Oracle/OCI) | Foco de portfolio en AWS. Meter OCI diluiría el relato para puestos AWS. |
 | Modelo | Híbrido (local + AWS gestionado) | Refleja el escenario empresarial real: infra propia que integra servicios cloud. |
-| Topología | 2 VMs (app + monitorización) | Simula infra distribuida. Más vendible que "todo en una VM". |
+| Topología | 4 VMs (bastión + web + db + monitorización) | Arquitectura por capas con segmentación de red y jump host. Patrón realista de pequeña infra. |
 | Versionado | Git + GitHub desde el día 0 | En DevOps, lo que no está en Git no existe. |
 | Coste | 0 € (Free Tier + billing alarms) | Disciplina de coste = señal de seniority. |
 
-### Topología prevista
+### Topología prevista (4 VMs)
 
 ```
   [ Host Windows · Ryzen 9 / 64 GB ]
         │  VirtualBox
-        ├── VM1  "app-server"      → Nginx + PostgreSQL + node_exporter
-        └── VM2  "monitor-server"  → Prometheus + Grafana
-                    │
-                    └──(AWS CLI)──►  AWS: IAM · S3 · (CloudWatch · Route53)
+        │
+        ├── VM1  "bastion"        → jump host SSH + nodo de control (AWS CLI, backups)
+        │            │  (único punto de entrada de administración)
+        │            ▼
+        ├── VM2  "web-server"     → Nginx (capa web) + node_exporter
+        │            │  (solo el web habla con la DB)
+        │            ▼
+        ├── VM3  "db-server"      → PostgreSQL (capa de datos, segmentada) + node_exporter
+        │
+        └── VM4  "monitor-server" → Prometheus + Grafana (raspa métricas de las 3 anteriores)
+                     │
+                     └──(AWS CLI)──►  AWS: IAM · S3 · (CloudWatch · Route53)
 ```
 
-> Nota: las VMs corren localmente; AWS aporta los servicios gestionados (almacenamiento de
-> backups en S3, identidad con IAM, y opcionalmente métricas/DNS/TLS).
+> Notas de diseño:
+> - **Segmentación:** la `db-server` solo es accesible desde la `web-server` (y el bastión para admin), nunca expuesta directamente.
+> - **Bastión:** único punto de entrada SSH; las demás VMs no aceptan SSH desde fuera de la red interna. En producción estricta un bastión se mantiene mínimo; aquí consolidamos en él el rol de administración (AWS CLI, orquestación de backups), y eso mismo es un buen tema de conversación en entrevista.
+> - **Descartado por ahora:** balanceador + segundo web-server (alta disponibilidad). Posible fase 2 futura.
+> - Las VMs corren localmente; AWS aporta los servicios gestionados (backups en S3, identidad con IAM, y opcionalmente métricas/DNS/TLS).
 
 ---
 
@@ -91,32 +102,32 @@ roles vs. usuarios, claves de acceso y su rotación.
 - **Error típico junior:** dar permisos amplios (777) para 'que funcione'; trabajar siempre como root.
 - **Buena práctica:** mínimo privilegio; un grupo por función; sudoers granular.
 
-### Módulo 2 — SSH y hardening de acceso  ⬜
-- **Aprendes:** autenticación por clave, deshabilitar login de root y por contraseña, endurecimiento del servicio, protección anti-fuerza bruta.
-- **Por qué existe:** SSH es la puerta de entrada; mal configurado es el riesgo nº1 de un servidor expuesto.
+### Módulo 2 — SSH, hardening y bastión (jump host)  ⬜
+- **Aprendes:** autenticación por clave, deshabilitar login de root y por contraseña, endurecimiento del servicio, protección anti-fuerza bruta, y el **patrón bastión/jump host** (entrar por la `bastion` y saltar a las VMs internas).
+- **Por qué existe:** SSH es la puerta de entrada; mal configurado es el riesgo nº1 de un servidor expuesto. El bastión reduce la superficie de ataque a un único punto controlado.
 - **Valor de portfolio:** seguridad práctica tangible; historia muy concreta para contar.
 - **Pregunta recruiter:** "¿Cómo aseguras el acceso remoto a un servidor?"
-- **Pregunta técnica:** "¿Por qué clave en vez de contraseña? ¿Qué es un known_hosts y de qué protege?"
-- **Error típico junior:** dejar login de root por SSH y contraseña habilitada; clave privada sin passphrase compartida.
-- **Buena práctica:** solo clave, root deshabilitado, puerto/acceso restringido, fail2ban o similar.
+- **Pregunta técnica:** "¿Por qué clave en vez de contraseña? ¿Qué ventaja de seguridad aporta un bastión frente a exponer SSH en cada host?"
+- **Error típico junior:** dejar login de root por SSH y contraseña habilitada; exponer SSH de todas las máquinas a la red en vez de centralizar el acceso.
+- **Buena práctica:** solo clave, root deshabilitado, acceso SSH externo únicamente al bastión, salto a internas vía jump host, fail2ban o similar.
 
-### Módulo 3 — Redes Linux  ⬜
-- **Aprendes:** modos de red de VM (NAT/host-only/bridged), IP estática, configuración de red moderna, firewall, diagnóstico (puertos, rutas, captura básica).
-- **Por qué existe:** sin entender la red, no puedes conectar servicios ni diagnosticar fallos.
+### Módulo 3 — Redes Linux y segmentación entre VMs  ⬜
+- **Aprendes:** modos de red de VM (NAT/host-only/bridged), red interna entre las 4 VMs, IP estática, configuración de red moderna, firewall, **segmentación** (qué VM puede hablar con cuál), diagnóstico (puertos, rutas, captura básica).
+- **Por qué existe:** sin entender la red no puedes conectar servicios, segmentar capas ni diagnosticar fallos. Aquí se materializa el aislamiento de la `db-server`.
 - **Valor de portfolio:** networking es el talón de Aquiles de la mayoría de juniors; dominarlo te diferencia.
 - **Pregunta recruiter:** "¿Cómo de cómodo estás con redes?"
 - **Pregunta técnica:** "Un servicio no responde en su puerto: ¿cómo lo diagnosticas paso a paso?"
 - **Error típico junior:** confundir los modos de red de la VM; abrir el firewall entero en vez de puertos concretos.
 - **Buena práctica:** IP estática para servidores, firewall por defecto denegar, abrir solo lo necesario.
 
-### Módulo 4 — Servicios: Nginx + PostgreSQL  ⬜
-- **Aprendes:** gestión de servicios con systemd, servir un sitio/app con Nginx, instalar y configurar PostgreSQL, conceptos de reverse proxy.
-- **Por qué existe:** son los servicios reales que sostienen aplicaciones; el corazón del servidor.
-- **Valor de portfolio:** demuestra que sabes desplegar y operar stack web + base de datos.
+### Módulo 4 — Servicios por capas: Nginx (web) + PostgreSQL (datos)  ⬜
+- **Aprendes:** gestión de servicios con systemd, servir un sitio/app con Nginx en la `web-server`, instalar y configurar PostgreSQL en la `db-server` separada, conectar la capa web a una base de datos **remota**, conceptos de reverse proxy.
+- **Por qué existe:** son los servicios reales que sostienen aplicaciones, ahora desplegados en una arquitectura de dos capas como en producción.
+- **Valor de portfolio:** demuestra que sabes desplegar y operar un stack web + base de datos **separados y comunicados de forma segura**.
 - **Pregunta recruiter:** "¿Has desplegado servicios web o bases de datos en Linux?"
-- **Pregunta técnica:** "¿Qué hace systemd cuando un servicio falla? ¿Qué es un reverse proxy y para qué sirve?"
-- **Error típico junior:** editar configs sin entenderlas; no comprobar el estado/logs del servicio tras un cambio.
-- **Buena práctica:** un cambio → recargar → verificar estado y logs; configs versionadas.
+- **Pregunta técnica:** "¿Por qué separar web y base de datos en máquinas distintas? ¿Cómo aseguras que solo el servidor web accede a la DB?"
+- **Error típico junior:** poner la DB a escuchar en todas las interfaces y accesible desde cualquier sitio; editar configs sin entenderlas; no comprobar estado/logs tras un cambio.
+- **Buena práctica:** DB escuchando solo donde debe y restringida por firewall; un cambio → recargar → verificar estado y logs; configs versionadas.
 
 ### Módulo 5 — Bash scripting y automatización con cron  ⬜
 - **Aprendes:** scripting de tareas administrativas, programación con cron, idempotencia, manejo de errores en scripts.
@@ -137,7 +148,7 @@ roles vs. usuarios, claves de acceso y su rotación.
 - **Buena práctica:** método (síntoma → hipótesis → evidencia en logs → causa → fix → verificación).
 
 ### Módulo 7 — Monitorización: Prometheus + Grafana  ⬜
-- **Aprendes:** exporters, recolección de métricas con Prometheus, dashboards en Grafana, alertas básicas. (Corre en la VM2.)
+- **Aprendes:** exporters (node_exporter en bastión, web y db), recolección centralizada de métricas con Prometheus desde la `monitor-server`, dashboards en Grafana, alertas básicas.
 - **Por qué existe:** observabilidad = saber qué pasa antes de que el usuario lo note. Base de SRE/DevOps.
 - **Valor de portfolio:** un dashboard real con métricas es de los entregables que más impresiona visualmente.
 - **Pregunta recruiter:** "¿Tienes experiencia con monitorización?"
@@ -216,3 +227,4 @@ A 5-8 h/semana, ritmo cómodo y sin prisa (la calidad manda):
 ## 7. Registro de cambios de la hoja de ruta
 
 - 2026-06-17 — v1: creación tras fase de descubrimiento (perfil, hardware, hosting híbrido, objetivos).
+- 2026-06-17 — v2: topología ampliada a 4 VMs (bastión, web, db separada, monitorización). Actualizados módulos 2 (bastión), 3 (segmentación), 4 (capas web/datos) y 7 (scraping multi-host). Descartada HA (balanceador) como fase 2 futura.
