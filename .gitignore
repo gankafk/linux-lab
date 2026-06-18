@@ -1,0 +1,10 @@
+# .gitignore donde vamos a declarar ficheros/carpetas a ignorar por el control de versiones para evitar filtraciones de seguridad
+# Parcialmente los secretos que no sean necesarios ser almacenados en el repositorio, serán almacenados localmente para evitar filtraciones
+
+# Excluimos por seguridad cualquier fichero que finalice en:
+*.pem
+*.env
+*.key
+
+#Excluimos la siguiente carpeta:
+Secretos/
