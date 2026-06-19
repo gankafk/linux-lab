@@ -6,5 +6,6 @@
 *.env
 *.key
 
-#Excluimos la siguiente carpeta:
+#Excluimos las siguientes carpetas:
 Secretos/
+notas/
