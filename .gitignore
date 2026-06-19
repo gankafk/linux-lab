@@ -7,5 +7,5 @@
 *.key
 
 #Excluimos las siguientes carpetas:
-Secretos/
+secretos/
 notas/
