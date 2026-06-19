@@ -57,52 +57,40 @@ verificarlo · Coste bajo control en cada sesión que toque AWS.
 > Estado: ⬜ pendiente · 🟦 en curso · ✅ hecho
 
 ### Módulo 0 — Fundamentos del lab y control de versiones  ✅
-- **Aprendes:** VM base Ubuntu Server, snapshots, repositorio Git, generalización de clones.
-- **Valor:** orden, reproducibilidad y manejo de Git desde el inicio.
+Repositorio Git con protección de secretos, VM base Ubuntu Server con LVM, snapshots y clonado generalizado de las 4 VMs.
 
 ### Módulo 1 — Administración Linux: usuarios, grupos y permisos  ⬜
-- **Aprendes:** usuarios/grupos, modelo de permisos, `sudo`/sudoers, umask, ACLs.
-- **Valor:** competencia núcleo de SysAdmin/DevOps.
+Crear usuarios y grupos, aplicar el modelo de permisos, configurar `sudo`/sudoers, umask y ACLs.
 
 ### Módulo 2 — SSH, hardening y bastión (jump host)  ⬜
-- **Aprendes:** autenticación por clave, hardening de SSH, anti-fuerza bruta, patrón bastión/jump host.
-- **Valor:** seguridad práctica tangible.
+Configurar autenticación SSH por clave, endurecer el servicio y montar el bastión como único punto de entrada.
 
 ### Módulo 3 — Redes Linux y segmentación entre VMs  ⬜
-- **Aprendes:** red interna entre las 4 VMs, IP estática, firewall, segmentación, diagnóstico de red.
-- **Valor:** networking, el punto débil de la mayoría de juniors.
+Red interna entre las 4 VMs, IPs estáticas, firewall y segmentación de la capa de datos.
 
 ### Módulo 4 — Servicios por capas: Nginx (web) + PostgreSQL (datos)  ⬜
-- **Aprendes:** systemd, Nginx, PostgreSQL en VM separada, conexión a DB remota, reverse proxy.
-- **Valor:** desplegar y operar un stack web + datos separados y comunicados de forma segura.
+Desplegar Nginx en la capa web y PostgreSQL en una VM separada, conectados de forma segura.
 
 ### Módulo 5 — Bash scripting y automatización con cron  ⬜
-- **Aprendes:** scripting de tareas, cron, idempotencia, manejo de errores.
-- **Valor:** scripts propios en el repo = evidencia de automatización.
+Escribir scripts de administración con Bash y programar tareas con cron.
 
 ### Módulo 6 — Logs y troubleshooting  ⬜
-- **Aprendes:** journald/rsyslog, correlación de logs, metodología de diagnóstico.
-- **Valor:** diagnosticar problemas es el grueso del trabajo real.
+Gestionar logs (journald/rsyslog) y aplicar una metodología sistemática de diagnóstico.
 
 ### Módulo 7 — Monitorización: Prometheus + Grafana  ⬜
-- **Aprendes:** exporters, recolección con Prometheus, dashboards en Grafana, alertas.
-- **Valor:** observabilidad; un dashboard real impresiona.
+Recolectar métricas con Prometheus y node_exporter, y construir dashboards y alertas en Grafana.
 
 ### Módulo 8 — Backups y recuperación  ⬜
-- **Aprendes:** estrategia de backup, copias automatizadas, probar la restauración, RTO/RPO.
-- **Valor:** pensamiento de fiabilidad/continuidad, raro en juniors.
+Automatizar backups, probar la restauración y definir RTO/RPO.
 
 ### Módulo 9 — Integración AWS: IAM + S3  ⬜
-- **Aprendes:** AWS CLI desde las VMs, IAM con mínimo privilegio, S3, backups offsite a S3.
-- **Valor:** el puente Linux↔Cloud; el núcleo del relato híbrido.
+Configurar AWS CLI, IAM con mínimo privilegio y enviar backups offsite a S3.
 
 ### Módulo 10 — AWS extra (opcional): CloudWatch · Route53 · HTTPS  ⬜
-- **Aprendes:** métricas/logs a CloudWatch, DNS con Route53, certificados TLS.
-- **Valor:** lleva el lab a "expuesto y profesional" con DNS y HTTPS reales.
+Enviar métricas/logs a CloudWatch, gestionar DNS con Route53 y servir HTTPS con certificado válido.
 
 ### Módulo 11 — Capstone: documentación, diagrama y post-mortem  ⬜
-- **Aprendes:** diagrama de arquitectura, README final, post-mortem de un incidente.
-- **Valor:** convierte las configs en un proyecto de portfolio coherente.
+Elaborar la documentación final, el diagrama de arquitectura y un post-mortem de un incidente.
 
 ---
 

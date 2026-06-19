@@ -31,9 +31,8 @@ AWS (IAM, S3, CloudWatch, Route53) · Git.
 
 ## Documentación
 
-- **[ROADMAP.md](ROADMAP.md)** — hoja de ruta: módulos ordenados por dificultad, qué aprende cada uno, su valor de portfolio y las preguntas típicas de recruiter/entrevistador.
-- **[GUIA_PASOS.md](GUIA_PASOS.md)** — guía de pasos por módulo: orden de operaciones, verificaciones y checklist de cierre.
-- Cada módulo tiene su propio `README.md` con decisiones, trabajo realizado y conceptos aprendidos.
+- **[ROADMAP.md](ROADMAP.md)** — hoja de ruta: módulos, objetivos y estado.
+- Cada módulo tiene su propio `README.md` con lo que se construyó, las decisiones clave y cómo reproducirlo.
 
 ## Estructura del repositorio
 
