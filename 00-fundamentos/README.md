@@ -24,6 +24,17 @@ con protección de secretos, y una VM base reproducible de la que clonar las 4 m
 | Recursos | Right-sizing por rol | Imagen base común; recursos ajustados por VM. |
 | Snapshots | Hipervisor + LVM | Dos capas complementarias. |
 
+## Recursos por VM
+
+Right-sizing por rol (ajustable según carga real observada en monitorización):
+
+| VM | vCPU | RAM |
+|---|---|---|
+| `bastion` | 1 | 2 GB |
+| `web-server` | 1 | 2 GB |
+| `db-server` | 2 | 2 GB |
+| `monitor-server` | 2 | 4 GB |
+
 ## Cómo reproducir
 
 1. Crear VM Ubuntu Server 24.04 (instalación manual, LVM, OpenSSH).
