@@ -1,6 +1,6 @@
 # Módulo 1 — Usuarios, grupos y permisos
 
-> Estado: 🟦 En curso
+> Estado: ✅ Completado
 
 ## Objetivo
 
@@ -45,8 +45,23 @@ funcionales solo valen para cuentas de servicio (sin login humano).
 
 - `web-server`: `www-data` · `db-server`: `postgres` · `monitor-server`: `prometheus`, `grafana`.
 
+## Qué se construyó
+
+- `umask 027` por defecto del sistema (`/etc/login.defs`).
+- Grupo `admins` con `sudo` completo; `juanma` como admin nominal; `labadmin` como break-glass.
+- Grupo `team` + directorio compartido `/srv/team` con **setgid + sticky (3770)** y **ACLs** (`g:team:rwx` de acceso y por defecto) → colaboración real pese a umask 027.
+- Operadores por VM con `sudo` granular (lista blanca de comandos por servicio): `webops`/`dbops`/`monops`.
+- Todo replicado en las VMs mediante el script `groups-users.sh`.
+
+> Pendiente por diseño: el `sudo` de los operadores se prueba contra los servicios reales en el Módulo 4 (aún no instalados).
+
+## Artefactos
+
+- [`groups-users.sh`](groups-users.sh) — crea umask, grupo, usuario (con contraseña), pertenencia y directorio compartido con setgid+ACLs.
+
 ## Conceptos clave del módulo
 
 Modelo usuario/grupo (primario vs suplementario) · permisos `rwx` en ficheros y directorios ·
 octal · propiedad (`chown`/`chgrp`) · `umask` · bits especiales (setgid para carpetas de equipo,
-sticky bit) · `sudoers` granular · ACLs · **autenticación ≠ autorización**.
+sticky bit) · `sudoers` granular (rutas absolutas, comandos con argumentos, `Cmnd_Alias`) · ACLs ·
+**autenticación ≠ autorización** · separación de funciones (provisionar vs operar).

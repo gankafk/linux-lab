@@ -59,7 +59,7 @@ verificarlo · Coste bajo control en cada sesión que toque AWS.
 ### Módulo 0 — Fundamentos del lab y control de versiones  ✅
 Repositorio Git con protección de secretos, VM base Ubuntu Server con LVM, snapshots y clonado generalizado de las 4 VMs.
 
-### Módulo 1 — Administración Linux: usuarios, grupos y permisos  ⬜
+### Módulo 1 — Administración Linux: usuarios, grupos y permisos  ✅
 Crear usuarios y grupos, aplicar el modelo de permisos, configurar `sudo`/sudoers, umask y ACLs.
 
 ### Módulo 2 — SSH, hardening y bastión (jump host)  ⬜
@@ -115,4 +115,5 @@ Elaborar la documentación final, el diagrama de arquitectura y un post-mortem d
 | Módulo | Estado |
 |---|---|
 | 0 — Fundamentos | ✅ |
-| 1–11 | ⬜ |
+| 1 — Usuarios, grupos y permisos | ✅ |
+| 2–11 | ⬜ |
