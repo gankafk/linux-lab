@@ -53,6 +53,13 @@ linux-lab/
 
 ## Estado actual
 
-🟦 **Módulo 0 — Fundamentos** (en curso): repositorio y protección de secretos listos;
-VM base `base-ubuntu-2404` creada, actualizada y con SSH verificado. Pendiente: snapshot
-de la base limpia y clonado de las cuatro máquinas.
+| Módulo | Estado |
+|---|---|
+| 0 — Fundamentos y versionado | ✅ |
+| 1 — Usuarios, grupos y permisos | ✅ |
+| 2 — SSH, hardening y bastión | ✅ |
+| 3 — Redes y segmentación | 🟦 (red interna lista; firewall y segmentación pendientes) |
+| 4–11 | ⬜ |
+
+Infraestructura levantada: 4 VMs con red interna privada (`10.10.10.0/24`), acceso SSH por
+clave a través del bastión (ProxyJump) y hardening aplicado. Siguiente: firewall y segmentación.
