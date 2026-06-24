@@ -62,7 +62,7 @@ Repositorio Git con protección de secretos, VM base Ubuntu Server con LVM, snap
 ### Módulo 1 — Administración Linux: usuarios, grupos y permisos  ✅
 Crear usuarios y grupos, aplicar el modelo de permisos, configurar `sudo`/sudoers, umask y ACLs.
 
-### Módulo 2 — SSH, hardening y bastión (jump host)  ⬜
+### Módulo 2 — SSH, hardening y bastión (jump host)  ✅
 Configurar autenticación SSH por clave, endurecer el servicio y montar el bastión como único punto de entrada.
 
 ### Módulo 3 — Redes Linux y segmentación entre VMs  ⬜
@@ -116,4 +116,6 @@ Elaborar la documentación final, el diagrama de arquitectura y un post-mortem d
 |---|---|
 | 0 — Fundamentos | ✅ |
 | 1 — Usuarios, grupos y permisos | ✅ |
-| 2–11 | ⬜ |
+| 2 — SSH, hardening y bastión | ✅ |
+| 3 — Redes y segmentación | 🟦 |
+| 4–11 | ⬜ |
