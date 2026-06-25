@@ -86,8 +86,10 @@ Automatizar backups, probar la restauración y definir RTO/RPO.
 ### Módulo 9 — Integración AWS: IAM + S3  ⬜
 Configurar AWS CLI, IAM con mínimo privilegio y enviar backups offsite a S3.
 
-### Módulo 10 — AWS extra (opcional): CloudWatch · Route53 · HTTPS  ⬜
-Enviar métricas/logs a CloudWatch, gestionar DNS con Route53 y servir HTTPS con certificado válido.
+### Módulo 10 — Exposición segura: dominio + Cloudflare + HTTPS (y CloudWatch)  ⬜
+Exponer el web con **dominio propio vía Cloudflare**, usando **Cloudflare Tunnel** (sin abrir puertos,
+sin IP pública — coherente con el aislamiento), **HTTPS** y seguridad de borde (WAF, DDoS, rate limiting).
+Opcional: métricas/logs a CloudWatch. (Sustituye el Route53 inicialmente previsto.)
 
 ### Módulo 11 — Capstone: documentación, diagrama y post-mortem  ⬜
 Elaborar la documentación final, el diagrama de arquitectura y un post-mortem de un incidente.
