@@ -1,6 +1,6 @@
 # Módulo 3 — Redes Linux y segmentación
 
-> Estado: 🟦 En curso
+> Estado: ✅ Completado (la segmentación del puerto de la DB se aplica en el Módulo 4, con PostgreSQL)
 
 ## Objetivo
 
@@ -32,9 +32,11 @@ esta red: el acceso a internet va por el NAT (Adaptador 1).
 - [x] Red interna en VirtualBox (misma red en las 4 VMs) + IPs estáticas con **netplan**.
 - [x] Conectividad entre las 4 VMs verificada (ping).
 - [x] (Cierra Módulo 2) ProxyJump a internas + hardening SSH de web/db/monitor.
-- [ ] Firewall (ufw): por defecto denegar + apertura mínima por rol.
-- [ ] Segmentación de la `db-server` (solo accesible desde `web-server` y bastión).
+- [x] Firewall (ufw): por defecto denegar entrante / permitir saliente en las 4 VMs.
+- [x] Segmentación SSH: a las internas solo se entra **desde el bastión** (`allow from 10.10.10.10`), verificado.
+- [ ] Segmentación del puerto de la DB (`5432` solo desde `web-server`) → **Módulo 4** (requiere PostgreSQL instalado).
 
 ## Artefactos
 
-- [`red-interna.sh`](red-interna.sh) — configura la IP estática interna con netplan (detecta la interfaz automáticamente, sin asumir `enp0s8`).
+- [`red-interna.sh`](red-interna.sh) — IP estática interna con netplan (detecta la interfaz automáticamente, valida el CIDR, idempotente).
+- [`ufw-rules.sh`](ufw-rules.sh) — firewall de las internas: deny por defecto + SSH solo desde el bastión (idempotente, guarda de host).

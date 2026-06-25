@@ -1,51 +1,67 @@
 #!/bin/bash
-# Nos aseguramos de que si algo falla, avise y no siga a ciegas
+#
+# groups-users.sh — Línea base de usuarios, grupos y permisos de una VM.
+#
+# Qué hace:
+#   - Fija el umask por defecto a 027 en /etc/login.defs.
+#   - Crea un grupo y un usuario (con contraseña) y añade el usuario al grupo.
+#   - Crea un grupo + directorio compartido en /srv con setgid + sticky y ACLs.
+#
+# Uso:        sudo ./groups-users.sh   (interactivo: pide nombres y contraseña)
+# Requisitos: ejecutar como root.
+# Idempotente: se puede re-ejecutar sin error; no recrea lo que ya existe.
+#
 set -euo pipefail
 
-# Comprobar quien ejecuta el script y si tiene privilegios o no
-if [[ $EUID -ne 0 ]]; then # Si EUID es distinto de 0 saca ERROR (El 0 es el ID asignado a root)
-    echo "[ERROR] Ejecuta el script con sudo"
+# --- Comprobaciones previas --------------------------------------------------
+if [[ $EUID -ne 0 ]]; then
+    echo "[ERROR] Este script debe ejecutarse como root (usa sudo)." >&2
     exit 1
 fi
 
-# En primer lugar modificamos el umask por defecto
+# --- umask por defecto -------------------------------------------------------
 sed -i "s/^UMASK.*/UMASK\t027/" /etc/login.defs
-echo "[OK] umask cambiada correctamente a 027"
+echo "[OK] umask por defecto fijada a 027"
 
-# Creamos nuevo grupo
-read -r -p "[INFO] Introduce el nombre del nuevo grupo a crear: " newgroup
-groupadd "$newgroup"
-echo "[OK] Grupo creado correctamente"
+# --- Grupo y usuario ---------------------------------------------------------
+read -r -p "[INFO] Nombre del nuevo grupo a crear: " newgroup
+groupadd -f "$newgroup"                     # -f = no falla si el grupo ya existe
+echo "[OK] Grupo '$newgroup' disponible"
 
-# Creamos nuevo usuario
-read -r -p "[INFO] Introduce el nombre del nuevo usuario a crear: " newuser
-useradd -m -s /bin/bash "$newuser"
+read -r -p "[INFO] Nombre del nuevo usuario a crear: " newuser
+if id "$newuser" &>/dev/null; then
+    echo "[INFO] El usuario '$newuser' ya existe; se omiten creación y contraseña."
+else
+    useradd -m -s /bin/bash "$newuser"
+    read -r -s -p "[INFO] Contraseña para $newuser: " newpass
+    echo
+    echo "$newuser:$newpass" | chpasswd
+    unset newpass                           # no dejar la contraseña en memoria más de lo necesario
+    echo "[OK] Usuario '$newuser' creado"
+fi
 
-# Creamos contraseña para el nuevo usuario
-read -r -s -p "[INFO] Introduce la contraseña para $newuser: " newpass
-echo
-echo "$newuser:$newpass"| chpasswd
-echo "[OK] Usuario creado correctamente"
+usermod -aG "$newgroup" "$newuser"          # idempotente: re-añadir a un grupo no falla
+echo "[OK] '$newuser' pertenece al grupo '$newgroup'"
 
-# Lo añadimos al grupo creado
-usermod -aG "$newgroup" "$newuser"
-echo "[OK] $newuser añadido al grupo $newgroup correctamente"
-
-# Grupo para carpeta compartida
-read -r -p "[INFO] Introduce el nombre del nuevo grupo para administrar la carpeta compartida (este nombre será el asignado tanto al grupo como a la carpeta): " sharedgroup
-groupadd "$sharedgroup"
-echo "[OK] Grupo $sharedgroup creado correctamente"
+# --- Grupo y directorio compartido -------------------------------------------
+read -r -p "[INFO] Nombre del grupo/carpeta compartida (mismo nombre para ambos): " sharedgroup
+groupadd -f "$sharedgroup"
 usermod -aG "$sharedgroup" "$newuser"
-echo "[OK] $newuser añadido al grupo $sharedgroup correctamente"
-mkdir /srv/"$sharedgroup"
-echo "[OK] Carpeta $sharedgroup creada correctamente"
-chgrp "$sharedgroup" /srv/"$sharedgroup"
-chmod 3770 /srv/"$sharedgroup"
-echo "[OK] Permisos y asignaciones de grupo de la carpeta $sharedgroup asignados con éxito"
+echo "[OK] Grupo compartido '$sharedgroup' listo y '$newuser' añadido"
 
-#Gestionar ACLs
-apt-get update && apt-get install -y acl
-setfacl -m g:"$sharedgroup":rwx /srv/"$sharedgroup"
-setfacl -d -m g:"$sharedgroup":rwx /srv/"$sharedgroup"
-echo "[OK] ACLs asignados con éxito"
-getfacl /srv/"$sharedgroup"
+shared_dir="/srv/$sharedgroup"
+mkdir -p "$shared_dir"                       # -p = no falla si ya existe
+chgrp "$sharedgroup" "$shared_dir"
+chmod 3770 "$shared_dir"                     # setgid + sticky + rwxrwx---
+echo "[OK] Directorio '$shared_dir' con setgid+sticky y grupo asignado"
+
+# --- ACLs (colaboración pese a umask 027) ------------------------------------
+if ! command -v setfacl &>/dev/null; then
+    apt-get update && apt-get install -y acl
+fi
+setfacl -m  g:"$sharedgroup":rwx "$shared_dir"   # acceso actual
+setfacl -d -m g:"$sharedgroup":rwx "$shared_dir"  # por defecto para lo nuevo
+echo "[OK] ACLs aplicadas"
+
+echo "[OK] Línea base completada. Estado del directorio compartido:"
+getfacl "$shared_dir"

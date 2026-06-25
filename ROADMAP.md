@@ -65,7 +65,7 @@ Crear usuarios y grupos, aplicar el modelo de permisos, configurar `sudo`/sudoer
 ### Módulo 2 — SSH, hardening y bastión (jump host)  ✅
 Configurar autenticación SSH por clave, endurecer el servicio y montar el bastión como único punto de entrada.
 
-### Módulo 3 — Redes Linux y segmentación entre VMs  ⬜
+### Módulo 3 — Redes Linux y segmentación entre VMs  ✅
 Red interna entre las 4 VMs, IPs estáticas, firewall y segmentación de la capa de datos.
 
 ### Módulo 4 — Servicios por capas: Nginx (web) + PostgreSQL (datos)  ⬜
@@ -117,5 +117,5 @@ Elaborar la documentación final, el diagrama de arquitectura y un post-mortem d
 | 0 — Fundamentos | ✅ |
 | 1 — Usuarios, grupos y permisos | ✅ |
 | 2 — SSH, hardening y bastión | ✅ |
-| 3 — Redes y segmentación | 🟦 |
+| 3 — Redes y segmentación | ✅ (segmentación de la DB en Módulo 4) |
 | 4–11 | ⬜ |
