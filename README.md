@@ -59,8 +59,9 @@ linux-lab/
 | 1 — Usuarios, grupos y permisos | ✅ |
 | 2 — SSH, hardening y bastión | ✅ |
 | 3 — Redes y segmentación | ✅ |
-| 4–11 | ⬜ |
+| 4 — Servicios (Nginx + PostgreSQL) | 🟦 (DB + app + gunicorn; falta Nginx) |
+| 5–11 | ⬜ |
 
-Infraestructura levantada: 4 VMs con red interna privada (`10.10.10.0/24`), acceso SSH por
-clave a través del bastión (ProxyJump), hardening aplicado y firewall (ufw) con SSH segmentado
-solo desde el bastión. Siguiente: servicios (Nginx + PostgreSQL) en el Módulo 4.
+Infraestructura levantada: 4 VMs con red interna privada (`10.10.10.0/24`), acceso SSH por clave
+vía bastión (ProxyJump), hardening, firewall (ufw) con SSH segmentado, y una arquitectura de dos
+capas (Flask+gunicorn en web ↔ PostgreSQL segmentada en db). Siguiente: Nginx como reverse proxy.

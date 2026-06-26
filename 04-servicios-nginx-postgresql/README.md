@@ -1,6 +1,6 @@
 # Módulo 4 — Servicios por capas: Nginx (web) + PostgreSQL (datos)
 
-> Estado: ⬜ Pendiente
+> Estado: 🟦 En curso (falta Nginx)
 
 ## Objetivo
 
@@ -23,11 +23,24 @@ segmentación de la base de datos.
 
 > Resultado: la DB es accesible **solo desde `web-server`**; el resto de VMs, denegado en las 3 capas.
 
-## Decisiones pendientes
+## Decisión de aplicación
 
-- Tipo de aplicación que sirve `web-server`: sitio estático + demo de conectividad, o app dinámica que lee de la DB con Nginx como reverse proxy (y, en ese caso, el stack).
+App dinámica en **Python / Flask** (con **gunicorn** y **Nginx** como reverse proxy). Sirve los
+mensajes almacenados en PostgreSQL.
+
+## Progreso
+
+- [x] `db-server`: PostgreSQL instalado; base de datos `labapp` + rol `appuser` (mínimo privilegio); tabla con datos.
+- [x] **Segmentación 3 capas** (`listen_addresses` + `pg_hba.conf` + `ufw`), verificada (web sí, otras VMs no).
+- [x] `web-server`: venv + app Flask + driver postgres; credenciales en `EnvironmentFile` fuera del repo.
+- [x] **gunicorn** como servicio systemd (`labapp.service`), usuario de servicio dedicado, escuchando en `127.0.0.1:8000`. Verificado con `curl`.
+- [ ] **Nginx como reverse proxy** (80 → 127.0.0.1:8000) + estáticos. *(Siguiente)*
+
+## Artefactos
+
+- [`app/`](app/) — app Flask de demostración (`app.py`, `templates/`, `static/`, `requirements.txt`).
 
 ## Notas de seguridad
 
-- Credenciales de la DB **fuera del repo** (gitignored / variables), nunca hardcodeadas.
-- Provisionar (instalar) = admin (`juanma`); operar el servicio = operador (`webops`/`dbops`).
+- Credenciales de la DB **fuera del repo** (`/etc/labapp/labapp.env`, 600 root), nunca hardcodeadas; la app las lee por variables de entorno.
+- Provisionar (instalar) = admin (`juanma`); la app corre como usuario de servicio sin login (`labapp`).
