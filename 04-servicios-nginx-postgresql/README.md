@@ -39,6 +39,8 @@ mensajes almacenados en PostgreSQL.
 ## Artefactos
 
 - [`app/`](app/) — app Flask de demostración (`app.py`, `templates/`, `static/`, `requirements.txt`).
+- [`deploy/labapp.service`](deploy/labapp.service) — unit file de systemd para gunicorn.
+- [`deploy/labapp.env.example`](deploy/labapp.env.example) — plantilla de credenciales (sin el secreto real).
 
 ## Notas de seguridad
 

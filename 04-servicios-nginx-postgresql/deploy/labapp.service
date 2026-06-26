@@ -1,0 +1,20 @@
+[Unit]
+Description=Lab app (Flask + gunicorn)
+After=network.target
+
+[Service]
+User=labapp
+Group=labapp
+WorkingDirectory=/opt/labapp
+Environment=HOME=/opt/labapp
+EnvironmentFile=/etc/labapp/labapp.env
+ExecStart=/opt/labapp/venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 app:app
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+# Despliegue:
+#   sudo cp labapp.service /etc/systemd/system/labapp.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now labapp
