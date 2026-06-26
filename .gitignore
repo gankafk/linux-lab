@@ -9,3 +9,7 @@
 #Excluimos las siguientes carpetas:
 secretos/
 notas/
+
+# Entornos virtuales de Python y cachés
+venv/
+__pycache__/

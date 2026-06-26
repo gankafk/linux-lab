@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Linux + AWS — App de demostración</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        <h1>Lab Linux + AWS</h1>
+        <p class="sub">App Flask sirviendo datos desde PostgreSQL (DB remota y segmentada).</p>
+
+        {% if error %}
+            <div class="error">No se pudo leer de la base de datos:<br><code>{{ error }}</code></div>
+        {% else %}
+            <ul class="mensajes">
+            {% for id, texto, creado in mensajes %}
+                <li>
+                    <span class="id">#{{ id }}</span>
+                    <span class="texto">{{ texto }}</span>
+                    <time>{{ creado }}</time>
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+
+        <footer>web-server → gunicorn → Flask → PostgreSQL @ db-server</footer>
+    </main>
+</body>
+</html>
