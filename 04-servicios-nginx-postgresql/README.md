@@ -1,6 +1,6 @@
 # Módulo 4 — Servicios por capas: Nginx (web) + PostgreSQL (datos)
 
-> Estado: 🟦 En curso (falta Nginx)
+> Estado: ✅ Completado
 
 ## Objetivo
 
@@ -34,13 +34,14 @@ mensajes almacenados en PostgreSQL.
 - [x] **Segmentación 3 capas** (`listen_addresses` + `pg_hba.conf` + `ufw`), verificada (web sí, otras VMs no).
 - [x] `web-server`: venv + app Flask + driver postgres; credenciales en `EnvironmentFile` fuera del repo.
 - [x] **gunicorn** como servicio systemd (`labapp.service`), usuario de servicio dedicado, escuchando en `127.0.0.1:8000`. Verificado con `curl`.
-- [ ] **Nginx como reverse proxy** (80 → 127.0.0.1:8000) + estáticos. *(Siguiente)*
+- [x] **Nginx como reverse proxy** (80 → 127.0.0.1:8000) + sirve los estáticos directamente. Cadena completa verificada con `curl`.
 
 ## Artefactos
 
 - [`app/`](app/) — app Flask de demostración (`app.py`, `templates/`, `static/`, `requirements.txt`).
 - [`deploy/labapp.service`](deploy/labapp.service) — unit file de systemd para gunicorn.
 - [`deploy/labapp.env.example`](deploy/labapp.env.example) — plantilla de credenciales (sin el secreto real).
+- [`deploy/nginx-labapp.conf`](deploy/nginx-labapp.conf) — server block de Nginx (reverse proxy + estáticos).
 
 ## Notas de seguridad
 

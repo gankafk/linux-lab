@@ -68,7 +68,7 @@ Configurar autenticación SSH por clave, endurecer el servicio y montar el basti
 ### Módulo 3 — Redes Linux y segmentación entre VMs  ✅
 Red interna entre las 4 VMs, IPs estáticas, firewall y segmentación de la capa de datos.
 
-### Módulo 4 — Servicios por capas: Nginx (web) + PostgreSQL (datos)  🟦
+### Módulo 4 — Servicios por capas: Nginx (web) + PostgreSQL (datos)  ✅
 Desplegar Nginx en la capa web y PostgreSQL en una VM separada, conectados de forma segura.
 
 ### Módulo 5 — Bash scripting y automatización con cron  ⬜
@@ -120,5 +120,5 @@ Elaborar la documentación final, el diagrama de arquitectura y un post-mortem d
 | 1 — Usuarios, grupos y permisos | ✅ |
 | 2 — SSH, hardening y bastión | ✅ |
 | 3 — Redes y segmentación | ✅ |
-| 4 — Servicios (Nginx + PostgreSQL) | 🟦 (DB, app y gunicorn hechos; falta Nginx) |
+| 4 — Servicios (Nginx + PostgreSQL) | ✅ |
 | 5–11 | ⬜ |
