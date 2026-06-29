@@ -71,7 +71,7 @@ Red interna entre las 4 VMs, IPs estáticas, firewall y segmentación de la capa
 ### Módulo 4 — Servicios por capas: Nginx (web) + PostgreSQL (datos)  ✅
 Desplegar Nginx en la capa web y PostgreSQL en una VM separada, conectados de forma segura.
 
-### Módulo 5 — Bash scripting y automatización con cron  ⬜
+### Módulo 5 — Bash scripting y automatización con cron  🟦
 Escribir scripts de administración con Bash y programar tareas con cron.
 
 ### Módulo 6 — Logs y troubleshooting  ⬜
@@ -121,4 +121,5 @@ Elaborar la documentación final, el diagrama de arquitectura y un post-mortem d
 | 2 — SSH, hardening y bastión | ✅ |
 | 3 — Redes y segmentación | ✅ |
 | 4 — Servicios (Nginx + PostgreSQL) | ✅ |
-| 5–11 | ⬜ |
+| 5 — Bash scripting y cron | 🟦 (health-check + cron; falta limpieza de logs) |
+| 6–11 | ⬜ |

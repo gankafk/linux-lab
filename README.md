@@ -60,7 +60,8 @@ linux-lab/
 | 2 — SSH, hardening y bastión | ✅ |
 | 3 — Redes y segmentación | ✅ |
 | 4 — Servicios (Nginx + PostgreSQL) | ✅ |
-| 5–11 | ⬜ |
+| 5 — Bash scripting y cron | 🟦 |
+| 6–11 | ⬜ |
 
 Infraestructura levantada: 4 VMs con red interna privada (`10.10.10.0/24`), acceso SSH por clave
 vía bastión (ProxyJump), hardening, firewall (ufw) con SSH segmentado, y una arquitectura web de
