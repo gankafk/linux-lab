@@ -1,6 +1,6 @@
 # Módulo 5 — Bash scripting y automatización con cron
 
-> Estado: 🟦 En curso
+> Estado: ✅ Completado
 
 ## Objetivo
 
@@ -31,11 +31,14 @@ controlada, programado con cron. Tarea clásica de sysadmin para evitar que el d
 
 - [x] **`health-check-web.sh` / `health-check-db.sh`**: chequean disco, memoria y los servicios de cada VM; registran en `/var/log/health-check.log` con timestamp; if/else con estado OK/WARNING.
 - [x] **cron**: programado en la crontab de root (`*/15 * * * *`), verificado que se ejecuta solo.
-- [ ] **`limpieza-logs.sh`**: borrar logs antiguos con `find -mtime` (con dry-run de seguridad). *(Siguiente)*
+- [x] **`limpieza-logs.sh`**: borra logs antiguos de un directorio con `find -mtime` (probado en dry-run y sobre `/tmp/test-logs`); registra qué borró.
+- [x] **logrotate** para `health-check.log` (fichero que crece): rotación diaria, compresión y retención de 7 días. La herramienta correcta para un log que crece (vs `find` para directorios de muchos ficheros).
 
 ## Artefactos
 
 - [`health-check-web.sh`](health-check-web.sh) / [`health-check-db.sh`](health-check-db.sh) — un script por VM (con sus servicios), desplegados en `/usr/local/sbin/` (root:root, 755), ejecutados por cron de root.
+- [`limpieza-logs.sh`](limpieza-logs.sh) — limpieza de logs antiguos en un directorio (`find -mtime`).
+- [`logrotate-health-check.conf`](logrotate-health-check.conf) — config de logrotate, va en `/etc/logrotate.d/health-check`.
 
 ## Conceptos del módulo
 
